@@ -26,7 +26,10 @@ export default defineComponent({
         .then((response) => response.json())
         .then((data) => {
           console.log(data);
-          movies.value = data.results;
+          const sortedData = data.results.sort((a, b) => {
+            return new Date(a.release_date) - new Date(b.release_date);
+          });
+          movies.value = sortedData;
         }).catch((error) => {
           console.log(error);
         })
