@@ -1,7 +1,11 @@
 <template>
   <div class="movielist-container">
     <ul class="movielist">
-      <MovieItem v-for="(movie, i) in movies" :key="i" :movie="movie" />
+      <MovieItem
+        v-for="(movie, i) in movies"
+        :key="i" :movie="movie"
+        @movie-selected="$emit('movieSelected', movie.url)"
+      />
     </ul>
   </div>
 </template>
@@ -20,6 +24,7 @@
         required: true,
       },
     },
+    emits: ['movieSelected'],
     setup() {
     
     return {}   
@@ -31,6 +36,7 @@
 <style scoped>
 .movielist-container {
   width: 100%;
+  background-color: brown
 }
 .movielist {
   width: 100%;

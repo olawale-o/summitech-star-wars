@@ -3,6 +3,7 @@
     <button
       type="button"
       class="movie-button"
+      @click="$emit('movieSelected', movie.url)"
     >
       {{ movie.title }}
     </button>
@@ -19,6 +20,7 @@ export default defineComponent({
       required: true,
     },
   },
+  emits: ['movieSelected'],
   setup() {
     return {}
   },
