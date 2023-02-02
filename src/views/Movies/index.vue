@@ -49,8 +49,10 @@ export default {
     //   const data = await response.json();
     //   return data;
     // };
-    const movieSelected = async (url) => {
+    const movieSelected = async ({ url, title }) => {
       console.log(url);
+      active.value = false;
+      dropdownTitle.value = title;
     //   const response = await fetch(url);
     //   const data = await response.json();
     //   // console.log(data);
@@ -82,10 +84,7 @@ export default {
       movieSelected,
       characters,
       dropdownTitle,
-      toggleButton: () => {
-        active.value = !active.value;
-        console.log('toggle button');
-      },
+      toggleButton: () => active.value = !active.value,
       active,
     } 
   },
@@ -111,11 +110,12 @@ export default {
 
 .dropdown-toggle {
   display: block;
-  background: transparent;
   padding: 1rem;
   font-size: 1.2rem;
   outline: none;
   border: none;
+  width: 100%;
+  text-align: left;
 }
 
 .dropdown-toggle::after {

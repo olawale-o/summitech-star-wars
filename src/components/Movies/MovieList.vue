@@ -4,7 +4,7 @@
       <MovieItem
         v-for="(movie, i) in movies"
         :key="i" :movie="movie"
-        @movie-selected="$emit('movieSelected', movie.url)"
+        @movie-selected="$emit('movieSelected', movie)"
       />
     </ul>
   </div>
@@ -48,5 +48,11 @@
 
 .movielist-container.active .movielist{
   max-height: 200px;
+}
+
+.movie-button {
+  padding: 0.8rem;
+  width: 100%;
+  font-size: 1.5rem;
 }
 </style>

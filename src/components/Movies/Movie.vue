@@ -3,7 +3,7 @@
     <button
       type="button"
       class="movie-button"
-      @click="$emit('movieSelected', movie.url)"
+      @click="$emit('movieSelected', movie)"
     >
       {{ movie.title }}
     </button>
