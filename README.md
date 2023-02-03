@@ -40,3 +40,4 @@ Give a :star: if you like this project!
 # Credits
 - Vercel
 - [SWAPI](https://swapi.dev/documentation)
+- [Summitech]
