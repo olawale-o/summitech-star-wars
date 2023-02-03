@@ -9,7 +9,7 @@
 ![screenshot](https://github.com/olawale-o/summitech-star-wars/blob/main/screenshot.png?raw=true")
 
 # Demo link
-Visit Demo [link](https://vue-awesome-books.netlify.app)
+Visit Demo [link](https://summitech-star-wars.vercel.app/)
 
 ## Install
 
@@ -39,4 +39,4 @@ Give a :star: if you like this project!
 
 # Credits
 - Vercel
-- SWAPI
+- [SWAPI](https://swapi.dev/documentation)
