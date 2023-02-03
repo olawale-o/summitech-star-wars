@@ -2,10 +2,10 @@
   <div class="character-table">
     <div class="gender">
       <select v-model="gender">
-        <option value="all">All</option>
-        <option value="m">m</option>
-        <option value="f">f</option>
-        <option value="other">other</option>
+        <option value="all">All Gender</option>
+        <option value="m">Male</option>
+        <option value="f">Female</option>
+        <option value="other">Other</option>
       </select>
     </div>
    <div class="header">
@@ -21,6 +21,10 @@
    </div>
    <div class="cells">
      <CharacterRow v-for="(character, i) in filterPersons" :key="i" :character="character" />
+   </div>
+   <div class="footer">
+     <span>{{ totalPersons }}</span>
+     <span>{{ cmToFeet() }}</span>
    </div>
   </div>
 </template>
@@ -43,6 +47,12 @@
       const filterPersons = ref(props.characters);
       const sortOrder = ref(true);
       const gender = ref('all');
+      const totalPersons = ref(props.characters.length);
+      // const totalHeight = ref(
+      //   props.characters.reduce((acc, curr) => {
+      //     return acc + parseInt(curr.height);
+      //   }, 0),
+      // );
       const filterByName = (key = '') => {
         if (!sortOrder.value) {
           filterPersons.value = filterPersons.value.sort((a, b) => {
@@ -97,23 +107,58 @@
       watch(gender, (newGender) => {
         if (newGender === 'all') {
           filterPersons.value = persons.value;
+          totalPersons.value = filterPersons.value.length;
+          // totalHeight.value = ref(
+          //   filterPersons.value.reduce((acc, curr) => {
+          //     return acc + parseInt(curr.height);
+          //   }, 0),
+          // );
         }
         if (newGender === 'm') {
           filterPersons.value = persons.value.filter((person) => person.gender === 'male');
+          totalPersons.value = filterPersons.value.length;
+          // totalHeight.value = ref(
+          //   filterPersons.value.reduce((acc, curr) => {
+          //     return acc + parseInt(curr.height);
+          //   }, 0),
+          // );
         }
         if (newGender === 'f') {
           filterPersons.value = persons.value.filter((person) => person.gender === 'female');
+          totalPersons.value = filterPersons.value.length;
+          // totalHeight.value = ref(
+          //   filterPersons.value.reduce((acc, curr) => {
+          //     return acc + parseInt(curr.height);
+          //   }, 0),
+          // );
         }
         if (newGender === 'other') {
           filterPersons.value = persons.value.filter((person) => (person.gender !== 'female') && (person.gender !== 'male'));
+          totalPersons.value = filterPersons.value.length;
+          // totalHeight.value = ref(
+          //   filterPersons.value.reduce((acc, curr) => {
+          //     return acc + parseInt(curr.height);
+          //   }, 0),
+          // );
         }
       });
+      const cmToFeet = () => {
+        const cm = filterPersons.value.reduce((acc, curr) => {
+          return acc + parseInt(curr.height);
+        }, 0);
+        const realFeet = ((cm * 0.393700) / 12);
+        const feet = Math.floor(realFeet);
+        const inches = Math.round((realFeet - feet) * 12);
+        return `${feet}ft/${inches}in`;
+      };
       return {
         persons,
         filterByName,
         filterByHeight,
         gender,
         filterPersons,
+        totalPersons,
+        cmToFeet,
       }
     },
   };
@@ -125,7 +170,19 @@
     display: flex;
     flex-direction: column;
   }
-  .header {
+
+  .gender {
+    width: 50%;
+    margin: 0 auto;
+  }
+
+  .gender select {
+    width: 100%;
+    padding: 0.8rem;
+    font-size: 1.5rem;
+    background: yellow
+  }
+  .header, .footer {
     width: 100%;
     display: flex;
     justify-content: space-between;
@@ -146,5 +203,23 @@
 
   .cells {
     width: 100%;
+  }
+
+  .footer {
+    background: #f2f2f2;
+  }
+
+  .footer span {
+    padding: 0.8rem;
+    font-size: 1rem;
+    text-align: center;
+    color: #000;
+  }
+
+  .footer span:nth-child(1) {
+    width: 50%;
+  }
+  .footer span:nth-child(2) {
+    width: 25%;
   }
 </style>
