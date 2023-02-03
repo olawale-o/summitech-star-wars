@@ -60,7 +60,7 @@ export default {
       movie.movie = data;
       Promise.all(data.characters.map((url) => fetchCharacters(url)))
         .then((data) => {
-          characters.value = data.filter((character) => character.height !== 'unknown' || character.height !== 'n/a' || character.gender !== 'n/a');
+          characters.value = data.filter((character) => character.height !== 'unknown' && character.height !== 'n/a');
         }).catch((error) => {
           console.log(error);
         });
