@@ -1,24 +1,43 @@
 # summitech-star-wars
 
-## Project setup
-```
+# Built with 
+
+- HTML
+- CSS
+- VUE
+# Screenshot
+![screenshot](https://github.com/olawale-o/summitech-star-wars/blob/main/src/assets/screenshot.png?raw=true")
+
+# Demo link
+Visit Demo [link](https://vue-awesome-books.netlify.app)
+
+## Install
+
+```bash
 npm install
 ```
 
-### Compiles and hot-reloads for development
-```
+## Usage
+
+```bash
 npm run serve
 ```
+# Authors
+:bust_in_silhouette: Omoogun Olawale
 
-### Compiles and minifies for production
-```
-npm run build
-```
+- Github: [Github](https://github.com/olawale-o)
+- Twitter: [Twitter](https://twitter.com/ibreaktherules)
+- LinkedIn: [LinkedIn](https://www.linkedin.com/in/olawaleomoogun/)
 
-### Lints and fixes files
-```
-npm run lint
-```
+### Contributing
+Contributions, issues, and feature requests are welcome!
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+Feel free to check the [issues page.](https://github.com/olawale-o/summitech-star-wars/issues)
+
+# Show your support
+Give a :star: if you like this project!
+
+# Credits
+- Netlify
+- Microverse
+- Github
