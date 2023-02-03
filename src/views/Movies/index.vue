@@ -1,4 +1,5 @@
 <template>
+  <div class="loading" v-if="loading"></div>
   <div class="movies-dropdown">
     <div class="button-container">
       <select v-model="dropdownTitle" @change="movieSelected">
@@ -31,13 +32,14 @@ export default {
   },
   setup() {
     const dropdownTitle = ref('');
-    const active = ref(false);
+    const loading = ref(false);
     const movies = ref([]);
     const movie = reactive({
       movie: {},
     });
     const characters = ref([]);
     const movieSelected = async (e) => {
+      loading.value = true;
       characters.value = [];
       movie.movie = {};
       if (e.target.value === '') return;
@@ -46,19 +48,24 @@ export default {
       movie.movie = data;
       Promise.all(data.characters.map((url) => fetchCharacters(url)))
         .then((data) => {
+          loading.value = false;
           characters.value = data.filter((character) => character.height !== 'unknown' && character.height !== 'n/a');
         }).catch((error) => {
+          loading.value = false;
           console.log(error);
         });
     };
     const fetchFilms = async (path) => {
+      loading.value = true;
       getFilms(path)
         .then((data) => {
+          loading.value = false;
           const sortedData = data.results.sort((a, b) => {
             return new Date(a.release_date) - new Date(b.release_date);
           });
           movies.value = sortedData;
         }).catch((error) => {
+          loading.value = false;
           console.log(error);
         })
     };
@@ -69,8 +76,7 @@ export default {
       movieSelected,
       characters,
       dropdownTitle,
-      toggleButton: () => active.value = !active.value,
-      active,
+      loading,
     } 
   },
 };
@@ -128,4 +134,26 @@ export default {
 .dropdown-toggle.active::after {
   transform: translateY(-50%) rotate(180deg);
 }
+
+.loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+    border: 10px solid white;
+    border-radius: 50%;
+    border-top: 10px solid yellow;
+    animation: loading 1s linear infinite;
+  }
+
+  @keyframes loading {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
 </style>
