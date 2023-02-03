@@ -1,13 +1,5 @@
 <template>
-  <li class="movie">
-    <button
-      type="button"
-      class="movie-button"
-      @click="$emit('movieSelected', movie)"
-    >
-      {{ movie.title }}
-    </button>
-  </li>
+  <option :value="movie.url">{{ movie.title }}</option>
 </template>
 
 <script>
@@ -20,7 +12,6 @@ export default defineComponent({
       required: true,
     },
   },
-  emits: ['movieSelected'],
   setup() {
     return {}
   },

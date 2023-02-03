@@ -1,13 +1,8 @@
 <template>
-  <div class="movielist-container" :class="{active: active}">
-    <ul class="movielist">
-      <MovieItem
-        v-for="(movie, i) in movies"
-        :key="i" :movie="movie"
-        @movie-selected="$emit('movieSelected', movie)"
-      />
-    </ul>
-  </div>
+  <MovieItem
+    v-for="(movie, i) in movies"
+    :key="i" :movie="movie"
+  />
 </template>
 
 <script>
@@ -23,11 +18,7 @@
         type: Array,
         required: true,
       },
-      active: {
-        type: Boolean,
-      }
     },
-    emits: ['movieSelected'],
     setup() {
     
     return {}   
@@ -44,10 +35,6 @@
   width: 100%;
   max-height: 0;
   overflow-y: scroll;
-}
-
-.movielist-container.active .movielist{
-  max-height: 200px;
 }
 
 .movie-button {
