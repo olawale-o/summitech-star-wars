@@ -6,7 +6,7 @@
 - CSS
 - VUE
 # Screenshot
-![screenshot](https://github.com/olawale-o/summitech-star-wars/blob/main/src/screenshot.png?raw=true")
+![screenshot](https://github.com/olawale-o/summitech-star-wars/blob/main/screenshot.png?raw=true")
 
 # Demo link
 Visit Demo [link](https://vue-awesome-books.netlify.app)
