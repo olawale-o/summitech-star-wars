@@ -12,7 +12,7 @@
      <button type="button" class="filter-btn" @click="filterByName('name')">
       Name
     </button>
-     <button type="button" class="filter-btn">
+     <button type="button" class="filter-btn" @click="filterByName('gender')">
       Gender
     </button>
      <button type="button" class="filter-btn" @click="filterByHeight('height')">
@@ -24,13 +24,13 @@
    </div>
    <div class="footer">
      <span>{{ totalPersons }}</span>
-     <span>{{ cmToFeet() }}</span>
+     <span>{{ cmToFeet(totalHeight) }}</span>
    </div>
   </div>
 </template>
 
 <script>
-  import { ref, watch } from 'vue';
+  import { ref, watch, computed } from 'vue';
   import CharacterRow from '@/components/Movies/CharacterRow.vue';
   export default {
     name: 'CharacterTable',
@@ -47,12 +47,18 @@
       const filterPersons = ref(props.characters);
       const sortOrder = ref(true);
       const gender = ref('all');
-      const totalPersons = ref(props.characters.length);
-      // const totalHeight = ref(
-      //   props.characters.reduce((acc, curr) => {
-      //     return acc + parseInt(curr.height);
-      //   }, 0),
-      // );
+      const totalPersons = computed(() => filterPersons.value.length);
+      const totalHeight = computed(() => {
+        return filterPersons.value.reduce((acc, curr) => {
+          return acc + parseInt(curr.height);
+        }, 0);
+      });
+      const cmToFeet = (cm) => {
+        const realFeet = ((cm * 0.393700) / 12);
+        const feet = Math.floor(realFeet);
+        const inches = Math.round((realFeet - feet) * 12);
+        return `${feet}ft/${inches}in`;
+      };
       const filterByName = (key = '') => {
         if (!sortOrder.value) {
           filterPersons.value = filterPersons.value.sort((a, b) => {
@@ -103,54 +109,20 @@
           sortOrder.value = !sortOrder.value;
         }
       };
-
       watch(gender, (newGender) => {
         if (newGender === 'all') {
           filterPersons.value = persons.value;
-          totalPersons.value = filterPersons.value.length;
-          // totalHeight.value = ref(
-          //   filterPersons.value.reduce((acc, curr) => {
-          //     return acc + parseInt(curr.height);
-          //   }, 0),
-          // );
         }
         if (newGender === 'm') {
           filterPersons.value = persons.value.filter((person) => person.gender === 'male');
-          totalPersons.value = filterPersons.value.length;
-          // totalHeight.value = ref(
-          //   filterPersons.value.reduce((acc, curr) => {
-          //     return acc + parseInt(curr.height);
-          //   }, 0),
-          // );
         }
         if (newGender === 'f') {
           filterPersons.value = persons.value.filter((person) => person.gender === 'female');
-          totalPersons.value = filterPersons.value.length;
-          // totalHeight.value = ref(
-          //   filterPersons.value.reduce((acc, curr) => {
-          //     return acc + parseInt(curr.height);
-          //   }, 0),
-          // );
         }
         if (newGender === 'other') {
           filterPersons.value = persons.value.filter((person) => (person.gender !== 'female') && (person.gender !== 'male'));
-          totalPersons.value = filterPersons.value.length;
-          // totalHeight.value = ref(
-          //   filterPersons.value.reduce((acc, curr) => {
-          //     return acc + parseInt(curr.height);
-          //   }, 0),
-          // );
         }
       });
-      const cmToFeet = () => {
-        const cm = filterPersons.value.reduce((acc, curr) => {
-          return acc + parseInt(curr.height);
-        }, 0);
-        const realFeet = ((cm * 0.393700) / 12);
-        const feet = Math.floor(realFeet);
-        const inches = Math.round((realFeet - feet) * 12);
-        return `${feet}ft/${inches}in`;
-      };
       return {
         persons,
         filterByName,
@@ -159,6 +131,7 @@
         filterPersons,
         totalPersons,
         cmToFeet,
+        totalHeight,
       }
     },
   };
