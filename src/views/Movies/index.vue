@@ -1,18 +1,13 @@
 <template>
   <div class="movies-dropdown">
     <div class="button-container">
-      <button
-        type="button"
-        class="dropdown-toggle"
-        @click="toggleButton"
-        :class="{active: active}"
-      >
-        {{  dropdownTitle  }}
-      </button>
+      <select v-model="dropdownTitle" @change="movieSelected">
+        <option value="">Choose a star wars movies</option>
+        <template v-if="movies.length > 0">
+          <MovieList :movies="movies" />
+        </template>
+      </select>
     </div>
-    <template v-if="movies.length > 0">
-      <MovieList :movies="movies" @movie-selected="movieSelected" :active="active" />
-    </template>
   </div>
   <OpeningCrawl v-if="movie.movie.opening_crawl" :openingCrawl="movie.movie.opening_crawl"/>
   <template v-if="characters.length > 0">
@@ -25,6 +20,7 @@ import { onMounted, ref, reactive } from 'vue';
 import MovieList from '@/components/Movies/MovieList.vue';
 import OpeningCrawl from '@/components/Movies/OpeningCrawl.vue';
 import CharacterTable from '@/components/Movies/CharacterTable.vue';
+import { getFilms, fetchCharacters } from '@/services';
 
 export default {
   name: 'MoviesView',
@@ -34,29 +30,19 @@ export default {
     CharacterTable,
   },
   setup() {
-    const dropdownTitle = ref('Choose a star wars movies');
+    const dropdownTitle = ref('');
     const active = ref(false);
-    const movies = ref([
-      {title: 'A New Hope', release_date: '1977-05-25', url: 'https://swapi.dev/api/films/1/'},
-      {title: 'The Empire Strikes Back', release_date: '1980-05-17', url: 'https://swapi.dev/api/films/2/'},
-    ]);
+    const movies = ref([]);
     const movie = reactive({
       movie: {},
     });
     const characters = ref([]);
-    const fetchCharacters = async (url) => {
-      const response = await fetch(url);
-      const data = await response.json();
-      return data;
-    };
-    const movieSelected = async ({ url, title }) => {
+    const movieSelected = async (e) => {
       characters.value = [];
-      console.log(url);
-      active.value = false;
-      dropdownTitle.value = title;
-      const response = await fetch(url);
+      movie.movie = {};
+      if (e.target.value === '') return;
+      const response = await fetch(e.target.value);
       const data = await response.json();
-      // console.log(data);
       movie.movie = data;
       Promise.all(data.characters.map((url) => fetchCharacters(url)))
         .then((data) => {
@@ -65,11 +51,9 @@ export default {
           console.log(error);
         });
     };
-    onMounted(() => {
-      fetch('https://swapi.dev/api/films/')
-        .then((response) => response.json())
+    const fetchFilms = async (path) => {
+      getFilms(path)
         .then((data) => {
-          console.log(data);
           const sortedData = data.results.sort((a, b) => {
             return new Date(a.release_date) - new Date(b.release_date);
           });
@@ -77,7 +61,8 @@ export default {
         }).catch((error) => {
           console.log(error);
         })
-    });
+    };
+    onMounted(() => fetchFilms('films'));
     return {
       movies,
       movie,
@@ -105,6 +90,14 @@ export default {
   width: 100%;
   position: relative;
   text-align: left;
+}
+
+.button-container select {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.2rem;
+  outline: none;
+  border: none;
   background: yellow;
 }
 
