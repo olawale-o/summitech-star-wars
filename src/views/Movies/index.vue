@@ -15,9 +15,9 @@
     </template>
   </div>
   <OpeningCrawl v-if="movie.movie.opening_crawl" :openingCrawl="movie.movie.opening_crawl"/>
-  <!-- <template v-if="movie.movie.characters"> -->
-  <CharacterTable :characters="characters" />
-  <!-- </template> -->
+  <template v-if="characters.length > 0">
+    <CharacterTable :characters="characters" />
+  </template>
 </template>
 
 <script>
@@ -44,39 +44,39 @@ export default {
       movie: {},
     });
     const characters = ref([]);
-    // const fetchCharacters = async (url) => {
-    //   const response = await fetch(url);
-    //   const data = await response.json();
-    //   return data;
-    // };
+    const fetchCharacters = async (url) => {
+      const response = await fetch(url);
+      const data = await response.json();
+      return data;
+    };
     const movieSelected = async ({ url, title }) => {
+      characters.value = [];
       console.log(url);
       active.value = false;
       dropdownTitle.value = title;
-    //   const response = await fetch(url);
-    //   const data = await response.json();
-    //   // console.log(data);
-    //   movie.movie = data;
-    //   Promise.all(data.characters.map((url) => fetchCharacters(url)))
-    //     .then((data) => {
-    //       console.log(data);
-    //       characters.value = data;
-    //     }).catch((error) => {
-    //       console.log(error);
-    //     });
+      const response = await fetch(url);
+      const data = await response.json();
+      // console.log(data);
+      movie.movie = data;
+      Promise.all(data.characters.map((url) => fetchCharacters(url)))
+        .then((data) => {
+          characters.value = data.filter((character) => character.height !== 'unknown' || character.height !== 'n/a' || character.gender !== 'n/a');
+        }).catch((error) => {
+          console.log(error);
+        });
     };
     onMounted(() => {
-    //   fetch('https://swapi.dev/api/films/')
-    //     .then((response) => response.json())
-    //     .then((data) => {
-    //       console.log(data);
-    //       const sortedData = data.results.sort((a, b) => {
-    //         return new Date(a.release_date) - new Date(b.release_date);
-    //       });
-    //       movies.value = sortedData;
-    //     }).catch((error) => {
-    //       console.log(error);
-    //     })
+      fetch('https://swapi.dev/api/films/')
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          const sortedData = data.results.sort((a, b) => {
+            return new Date(a.release_date) - new Date(b.release_date);
+          });
+          movies.value = sortedData;
+        }).catch((error) => {
+          console.log(error);
+        })
     });
     return {
       movies,
