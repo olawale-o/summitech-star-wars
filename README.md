@@ -38,6 +38,5 @@ Feel free to check the [issues page.](https://github.com/olawale-o/summitech-sta
 Give a :star: if you like this project!
 
 # Credits
-- Netlify
-- Microverse
-- Github
+- Vercel
+- SWAPI
