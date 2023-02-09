@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { onMounted, ref, reactive } from 'vue';
+import { onMounted, ref, reactive, computed } from 'vue';
 import MovieList from '@/components/Movies/MovieList.vue';
 import OpeningCrawl from '@/components/Movies/OpeningCrawl.vue';
 import CharacterTable from '@/components/Movies/CharacterTable.vue';
@@ -32,14 +32,12 @@ export default {
   },
   setup() {
     const dropdownTitle = ref('');
-    const loading = ref(false);
     const movies = ref([]);
     const movie = reactive({
       movie: {},
     });
     const characters = ref([]);
     const movieSelected = async (e) => {
-      loading.value = true;
       characters.value = [];
       movie.movie = {};
       if (e.target.value === '') return;
@@ -48,27 +46,25 @@ export default {
       movie.movie = data;
       Promise.all(data.characters.map((url) => fetchCharacters(url)))
         .then((data) => {
-          loading.value = false;
           characters.value = data.filter((character) => character.height !== 'unknown' && character.height !== 'n/a');
         }).catch((error) => {
-          loading.value = false;
           console.log(error);
         });
     };
     const fetchFilms = async (path) => {
-      loading.value = true;
       getFilms(path)
         .then((data) => {
-          loading.value = false;
           const sortedData = data.results.sort((a, b) => {
             return new Date(a.release_date) - new Date(b.release_date);
           });
           movies.value = sortedData;
         }).catch((error) => {
-          loading.value = false;
           console.log(error);
         })
     };
+    const loading = computed(() => (
+      movies.value.length === 0 || (characters.value.length === 0 && movie.movie.opening_crawl)
+    ));
     onMounted(() => fetchFilms('films'));
     return {
       movies,
