@@ -21,7 +21,8 @@ import { onMounted, ref, reactive, computed } from 'vue';
 import MovieList from '@/components/Movies/MovieList.vue';
 import OpeningCrawl from '@/components/Movies/OpeningCrawl.vue';
 import CharacterTable from '@/components/Movies/CharacterTable.vue';
-import { getFilms, fetchCharacters } from '@/services';
+import { fetchCharacters } from '@/services';
+import useMovie from '@/composables/useMovie';
 
 export default {
   name: 'MoviesView',
@@ -32,7 +33,7 @@ export default {
   },
   setup() {
     const dropdownTitle = ref('');
-    const movies = ref([]);
+    let movies = ref([]);
     const movie = reactive({
       movie: {},
     });
@@ -51,21 +52,13 @@ export default {
           console.log(error);
         });
     };
-    const fetchFilms = async (path) => {
-      getFilms(path)
-        .then((data) => {
-          const sortedData = data.results.sort((a, b) => {
-            return new Date(a.release_date) - new Date(b.release_date);
-          });
-          movies.value = sortedData;
-        }).catch((error) => {
-          console.log(error);
-        })
-    };
     const loading = computed(() => (
       movies.value.length === 0 || (characters.value.length === 0 && movie.movie.opening_crawl)
     ));
-    onMounted(() => fetchFilms('films'));
+    onMounted(async () => {
+      const { films } = await useMovie('films');
+      movies.value = films;
+    });
     return {
       movies,
       movie,
