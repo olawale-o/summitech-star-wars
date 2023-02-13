@@ -2,17 +2,20 @@ import { reactive, readonly } from 'vue';
 import { getFilms } from '@/services';
 
 const state = reactive({
-  films: [],
+  movies: [],
 });
 
 export default async function useMovie(path) {
-  try {
-    const response = await getFilms(path);
-    state.films = response.results.sort((a, b) => new Date(a.release_date) - new Date(b.release_date));
-  } catch (error) {
-    console.error(error);
-  }
+  const getMovies = async (path) => {
+    try {
+      const response = await getFilms(path);
+      state.movies = response.results.sort((a, b) => new Date(a.release_date) - new Date(b.release_date));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  await getMovies(path);
   return readonly({
-    films: state.films,
+    films: state.movies,
   });
 }
