@@ -10,19 +10,20 @@
       </select>
     </div>
   </div>
-  <OpeningCrawl v-if="movie.movie.opening_crawl" :openingCrawl="movie.movie.opening_crawl"/>
+  <OpeningCrawl v-if="movie.opening_crawl" :openingCrawl="movie.movie.opening_crawl"/>
   <template v-if="characters.length > 0">
     <CharacterTable :characters="characters" />
   </template>
 </template>
 
 <script>
-import { onMounted, ref, reactive, computed } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import MovieList from '@/components/Movies/MovieList.vue';
 import OpeningCrawl from '@/components/Movies/OpeningCrawl.vue';
 import CharacterTable from '@/components/Movies/CharacterTable.vue';
-import { fetchCharacters } from '@/services';
+// import { fetchCharacters } from '@/services';
 import useMovie from '@/composables/useMovie';
+import useMovies from '@/composables/useMovies';
 
 export default {
   name: 'MoviesView',
@@ -32,28 +33,30 @@ export default {
     CharacterTable,
   },
   setup() {
+    const { onMovieSelected } = useMovies();
     const dropdownTitle = ref('');
     let movies = ref([]);
-    const movie = reactive({
-      movie: {},
-    });
+    const movie = ref({});
     const characters = ref([]);
     const movieSelected = async (e) => {
       characters.value = [];
-      movie.movie = {};
+      movie.value = {};
       if (e.target.value === '') return;
-      const response = await fetch(e.target.value);
-      const data = await response.json();
-      movie.movie = data;
-      Promise.all(data.characters.map((url) => fetchCharacters(url)))
-        .then((data) => {
-          characters.value = data.filter((character) => character.height !== 'unknown' && character.height !== 'n/a');
-        }).catch((error) => {
-          console.log(error);
-        });
+      const { film, casts } = await onMovieSelected(e.target.value);
+      movie.value = film;
+      characters.value = casts;
+      // const response = await fetch(e.target.value);
+      // const data = await response.json();
+      // movie.movie = data;
+      // Promise.all(data.characters.map((url) => fetchCharacters(url)))
+      //   .then((data) => {
+      //     characters.value = data.filter((character) => character.height !== 'unknown' && character.height !== 'n/a');
+      //   }).catch((error) => {
+      //     console.log(error);
+      //   });
     };
     const loading = computed(() => (
-      movies.value.length === 0 || (characters.value.length === 0 && movie.movie.opening_crawl)
+      movies.value.length === 0 || (characters.value.length === 0 && movie.value?.opening_crawl)
     ));
     onMounted(async () => {
       const { films } = await useMovie('films');
